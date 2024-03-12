@@ -60,6 +60,20 @@ isconvex(::Tetrahedron) = true
 
 isconvex(p::Polygon{2}) = Set(vertices(convexhull(p))) == Set(vertices(p))
 
+function isconvex(p::Polyhedron{3})
+  # check center of each vertices are in the polyhedron
+  v = vertices(p)
+  for idx1 = 1:length(v), idx2 = idx1+1:length(v)
+    v1 = v[idx1]
+    v2 = v[idx2]
+    center_point = centroid(Segment(v1,v2))
+    if center_point ∉ p
+      return false
+    end
+  end
+  return true
+end
+
 isconvex(m::Multi{Dim,T}) where {Dim,T} = isapprox(measure(convexhull(m)), measure(m), atol=atol(T))
 
 # --------------

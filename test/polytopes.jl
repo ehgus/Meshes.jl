@@ -790,9 +790,7 @@
     @test h(T(1), T(0), T(1)) == P3(1, 0, 1)
     @test h(T(1), T(1), T(0)) == P3(1, 1, 0)
     @test h(T(1), T(1), T(1)) == P3(1, 1, 1)
-
-    h =
-      Hexahedron(P3(0, 0, 0), P3(1, 0, 0), P3(1, 1, 0), P3(0, 1, 0), P3(0, 0, 1), P3(1, 0, 1), P3(1, 1, 1), P3(0, 1, 1))
+    @test isconvex(h)
     @test volume(h) ≈ T(1 * 1 * 1)
     h =
       Hexahedron(P3(0, 0, 0), P3(2, 0, 0), P3(2, 2, 0), P3(0, 2, 0), P3(0, 0, 2), P3(2, 0, 2), P3(2, 2, 2), P3(0, 2, 2))
@@ -804,6 +802,10 @@
     h =
       Hexahedron(P3(0, 0, 0), P3(2, 0, 0), P3(2, 2, 0), P3(0, 2, 0), P3(0, 0, 2), P3(1, 0, 2), P3(1, 1, 2), P3(0, 1, 2))
     @test volume(h) ≈ T(1 / 3 * 2 * (1 + 4 + sqrt(1 * 4)))
+
+    h =
+      Hexahedron(P3(0, 0, 0), P3(2, 0, 0), P3(2, 2, 0), P3(0, 2, 0), P3(0, 0, 2), P3(2, 0, 1), P3(2, 2, 2), P3(0, 2, 1))
+    @test !isconvex(h)
 
     h =
       Hexahedron(P3(0, 0, 0), P3(1, 0, 0), P3(1, 1, 0), P3(0, 1, 0), P3(0, 0, 1), P3(1, 0, 1), P3(1, 1, 1), P3(0, 1, 1))
@@ -848,6 +850,7 @@
     @test nvertices(Pyramid) == 5
 
     p = Pyramid(P3(0, 0, 0), P3(1, 0, 0), P3(1, 1, 0), P3(0, 1, 0), P3(0, 0, 1))
+    @test isconvex(p)
     @test volume(p) ≈ T(1 / 3)
     m = boundary(p)
     @test m isa Mesh
@@ -857,6 +860,9 @@
     @test m[3] isa Triangle
     @test m[4] isa Triangle
     @test m[5] isa Triangle
+
+    p = Pyramid(P3(0, 0, 0), P3(1, 0, 0), P3(0.2, 0.2, 0), P3(0, 1, 0), P3(0, 0, 1))
+    @test !isconvex(p)
 
     p = rand(Pyramid{3,T})
     @test p isa Pyramid
